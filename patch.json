@@ -1,0 +1,54 @@
+ {
+    "version": 1,
+    "patches": [
+        {
+            "id": "idman-643-b7",
+            "app_name": "Internet Download Manager",
+            "desc": "Internet Download Manager Patch for updates",
+            "rules_desc": [
+                "nothing"
+            ],
+            "default_installation_path":[
+                "%ProgramFiles(x86)%\\Internet Download Manager",
+                "%ProgramFiles%\\Internet Download Manager"
+            ],
+            "app_signature_rules": [
+                {"type": "is_writable", "filename": "IDMan.exe"},
+                {"type": "filename", "filename": "IDMan.exe", "matchcase": false}
+            ],
+            "patch": [
+                {"type": "taskkill", "filename": "idman.exe"},
+                {"type": "taskkill", "filename": "IDMGrHlp.exe"},
+                {"type": "taskkill", "filename": "idmBroker.exe"},
+                {"type": "taskkill", "filename": "IDMIntegrator64.exe"},
+                {"type": "taskkill", "filename": "IDMMsgHost.exe"},
+                {"type": "taskkill", "filename": "IEMonitor.exe"},
+                {"type": "taskkill", "filename": "MediumILStart.exe"},
+                {"type": "mkdir", "dir": "tmp_update"},
+                {"type": "overwrite", "dest": "tmp_update/setup.exe", "src": "idm/setup.app"},
+                {"type": "overwrite", "dest": "tmp_update/install.reg", "src": "idm/install.reg"},
+                {"type": "overwrite", "dest": "tmp_update/ias.cmd", "src": "idm/ias.cmd"},
+                {"type": "execute", "args": "/skipdlgs", "executable": "tmp_update/setup.exe","admin":true},
+                {"type": "delay", "wait": 1000},
+                {"type": "taskkill", "filename": "idman.exe"},
+                {"type": "taskkill", "filename": "IDMGrHlp.exe"},
+                {"type": "taskkill", "filename": "idmBroker.exe"},
+                {"type": "taskkill", "filename": "IDMIntegrator64.exe"},
+                {"type": "taskkill", "filename": "IDMMsgHost.exe"},
+                {"type": "taskkill", "filename": "IEMonitor.exe"},
+                {"type": "taskkill", "filename": "MediumILStart.exe"},
+                {"type": "execute", "args": "/c tmp_update/ias.cmd", "executable": "cmd","admin":true},
+                {"type": "execute", "args": "/s tmp_update/install.reg", "executable": "regedit","admin":true},
+                {"type": "overwrite", "dest": "IDMan.exe", "src": "idm/idm.app"},
+                {"type": "delay", "wait": 1000},
+                {"type": "check", "checks": [
+                    {"type": "hash", "filename": "IDMan.exe", "hash": "a552f3042eadfd3c7e6a442f2d6dadac5b6f59c5", "algo": "SHA1"}
+                ]},
+                {"type": "delete", "filename": "tmp_update/setup.exe", "force": true, "required": false},
+                {"type": "delete", "filename": "tmp_update/install.reg", "force": true, "required": false},
+                {"type": "rmdir", "dir": "tmp_update", "force": true, "required": false},
+                {"type": "execute", "args": "", "executable": "IDMan.exe"}
+            ]
+        }
+    ]
+} 
